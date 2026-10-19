@@ -63,6 +63,13 @@ else()
 include("${CMAKE_ANDROID_NDK}/build/cmake/android.toolchain.cmake")
 endif()
 
+# ALCEO: 16 KB page size (Google Play, Android 15+): LOAD segments and the end of RELRO aligned to 16 KB.
+# common-page-size is what aligns the end of RELRO with the BFD linker of NDK r20.
+set(ALCEO_16K_LINKER_FLAGS "-Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384")
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${ALCEO_16K_LINKER_FLAGS}")
+set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${ALCEO_16K_LINKER_FLAGS}")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${ALCEO_16K_LINKER_FLAGS}")
+
 if(CMAKE_ANDROID_NDK_VERSION VERSION_LESS 19)
 	set(CMAKE_FIND_ROOT_PATH "${CMAKE_SYSROOT}" "${ANDROID_SYSTEM_LIBRARY_PATH}" "${CMAKE_INSTALL_PREFIX}")
 else()
